@@ -1,0 +1,9 @@
+{
+  "name": "wowot",
+  "version": "1.0.0",
+  "description": "A discord bot for the wowo.",
+  "main": "index.js",
+  "repository": "git@github.com:ArthurS1/wowot.git",
+  "author": "Arthur Soulié <arthur.soulie@tuta.io>",
+  "license": "MIT"
+}
