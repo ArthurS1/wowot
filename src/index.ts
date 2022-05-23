@@ -1,11 +1,11 @@
 import { Client, Intents, TextChannel} from 'discord.js';
-import { token } from '../config.json';
+import { token, channels } from '../config.json';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once('ready', () => {
 	console.log('Ready!');
-  sendHello()
+  sendTo(channels['debug'], 'Bonjour, je suis wowot :wave:')
 });
 
 client.login(token)
@@ -13,13 +13,15 @@ client.login(token)
   console.log(`token in use is ${token}`);
 });
 
-function sendHello() {
-  const channel = client.channels.cache.get('798678617840287755');
+function sendTo(channelId: string, msg: string) {
+  const channel = client.channels.cache.get(channelId);
 
   if (channel?.isText) {
-    (channel as TextChannel).send("Bonjour, je suis wowot :wave:")
-      .then(_ => console.log('message sent'))
-      .catch(err => console.log(`message failed with error: ${err}`));
+    (channel as TextChannel).send(msg)
+      .then(_ => console.log(`message sent: ${msg}`))
+      .catch(err => {
+        throw Error(`message failed with error: ${err}`)
+      });
   }
 }
 
