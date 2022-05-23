@@ -5,7 +5,8 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once('ready', () => {
 	console.log('Ready!');
-  sendTo(channels['debug'], 'Bonjour, je suis wowot :wave:')
+  sendTo(channels['debug'], 'Wowo les amis :wave:')
+  sendTo(channels['debug'], ':D')
 });
 
 client.login(token)
