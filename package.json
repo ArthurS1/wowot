@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "run": "yarn build && node build/src/index.js",
+    "start": "yarn build && node build/src/index.js",
     "debug": "yarn build && node --inspect build/src/index.js"
   }
 }
