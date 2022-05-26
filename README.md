@@ -5,7 +5,7 @@ A discord bot for the wowo.
 ## 🤖 Project goals
 
 - take a csv of people and their city as input
-- be run able inside a podman compliant image
+- be able to run inside a podman compliant image
 - handle the wowo for concerned people with a cron every 30 minutes 
 
 ## 🙋 Contribute
@@ -36,4 +36,4 @@ quite understand...
 
 ### Merge policy
 
-No merge, only rebases.
+No merges, only rebases.
