@@ -9,7 +9,9 @@ RUN crontab -l
 
 COPY . .
 
-RUN apk add nodejs yarn
+RUN apk add nodejs yarn tzdata
+
+RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
 RUN yarn install
 RUN yarn run build
