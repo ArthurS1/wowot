@@ -2,11 +2,6 @@ FROM alpine:3.15
 
 WORKDIR /app
 
-COPY cron .
-
-RUN cat cron >> /etc/crontabs/root
-RUN crontab -l
-
 COPY . .
 
 RUN apk add nodejs yarn tzdata
@@ -16,4 +11,4 @@ RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime
 RUN yarn install
 RUN yarn run build
 
-CMD crond -f -l 8
+CMD node build/src/index.js --prod
