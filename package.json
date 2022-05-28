@@ -1,6 +1,6 @@
 {
   "name": "wowot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A discord bot for the wowo.",
   "main": "src/index.ts",
   "repository": "git@github.com:ArthurS1/wowot.git",
