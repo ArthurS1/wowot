@@ -3,4 +3,4 @@ yarn-error.log
 .env
 config.json
 build
-src/timezones.csv
+timezones.csv
