@@ -22,18 +22,7 @@ const argv = yargs(process.argv.slice(1))
     .describe('prod', 'prod')
     .parseSync();
 
-console.log(argv.prod);
-
-/*
-switch (process.argv[2]) {
-case '--prod':
-    new Core(config, ServerState.Production);
-    break;
-case '--help':
-    Core.showUsage();
-    break;
-default:
-    new Core(config, ServerState.Debug);
-    break;
-}
-*/
+if (argv.prod)
+    new Core(config, ServerState.Production, argv.file);
+else
+    new Core(config, ServerState.Debug, argv.file);

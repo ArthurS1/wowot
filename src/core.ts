@@ -22,7 +22,7 @@ export class Core {
 
     cron: CronJob | undefined = undefined;
 
-    constructor(conf: Conf, prod: ServerState) {
+    constructor(conf: Conf, prod: ServerState, file: string) {
         this.showInfo('starting bot');
         this.conf = conf;
         this.server_state = prod;
@@ -58,14 +58,5 @@ export class Core {
         const state = this.server_state === ServerState.Production ? 'Production' : 'Debug';
 
         console.info(`[${time}, ${state}] ${info}`);
-    }
-
-    static showUsage() {
-        console.info(`USAGE:
-    wowot [--help] [--prod]
-
-DESCRIPTION:
-    help    shows this help message
-    prod    turns production mod on sending wowos on the production channel`);
     }
 }
