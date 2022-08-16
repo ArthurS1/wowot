@@ -6,6 +6,9 @@ import {
 } from 'discord.js';
 import { LocalTime } from '@js-joda/core';
 import { CronJob } from 'cron';
+import { Timezone, UserRecord } from './timezone';
+import * as Fs from 'fs';
+import { parse } from 'csv-parse/sync';
 import Conf from './conf';
 
 export enum ServerState {
@@ -22,17 +25,15 @@ export class Core {
 
     cron: CronJob | undefined = undefined;
 
-    constructor(conf: Conf, prod: ServerState) {
+    constructor(conf: Conf, state: ServerState, file: string) {
         this.showInfo('starting bot');
         this.conf = conf;
-        this.server_state = prod;
+        this.server_state = state;
         this.client = new Client({ intents: [Intents.FLAGS.GUILDS] });
         this.client.once('ready', () => {
-            this.cron = new CronJob(this.conf.cron, () => {
-                this.send('ωoωo les amis :wave:')
-                    .then(() => this.showInfo('wowo sent'));
-            });
-            this.cron.start();
+            const timezones_data = this.parseCsv(file);
+
+            timezones_data.forEach((user_record) => new Timezone(user_record, this));
         });
         this.setup();
     }
@@ -53,19 +54,43 @@ export class Core {
         return Promise.reject(new Error('not a text channel'));
     }
 
+    static accumulateRecords(
+        acc: UserRecord[],
+        current: {name: string, offset: string}
+    ): UserRecord[]
+    {
+        const new_record: UserRecord = {
+            names: [current.name],
+            offset: Number(current.offset)
+        };
+        const same_offset = acc.find(
+            (value) => value.offset === new_record.offset
+        );
+
+        if (same_offset) {
+            same_offset.names = same_offset.names.concat(new_record.names);
+            return acc;
+        } else {
+            acc.push(new_record);
+            return acc;
+        }
+    }
+
+    parseCsv(file: string): UserRecord[] {
+        const data = Fs.readFileSync(file, 'utf8');
+        const records = parse(data, { columns: true });
+
+        return records.reduce(Core.accumulateRecords, []);
+    }
+
+    destroy() {
+        this.client.destroy();
+    }
+
     showInfo(info: string) {
         const time = LocalTime.now();
         const state = this.server_state === ServerState.Production ? 'Production' : 'Debug';
 
         console.info(`[${time}, ${state}] ${info}`);
-    }
-
-    static showUsage() {
-        console.info(`USAGE:
-    wowot [--help] [--prod]
-
-DESCRIPTION:
-    help    shows this help message
-    prod    turns production mod on sending wowos on the production channel`);
     }
 }
