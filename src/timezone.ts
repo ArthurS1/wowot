@@ -1,6 +1,11 @@
 import { Core } from './core';
 import { CronJob } from 'cron';
 
+export interface UserRecord {
+    names: string[],
+    offset: number,
+}
+
 export class Timezone {
     names: string[];
 
@@ -12,13 +17,13 @@ export class Timezone {
 
     minute = 30;
 
-    constructor(names: string[], offset: number, core: Core) {
-        this.names = names;
-        this.time_offset = offset;
+    constructor(user_record: UserRecord, core: Core) {
+        this.names = user_record.names;
+        this.time_offset = user_record.offset;
         this.cron = new CronJob({
             cronTime: `${this.minute} ${this.hour} * * * *`,
             onTick: () => {
-                core.send(`wowo ${names.join(', ')} :feet_wave:`)
+                core.send(`wowo ${user_record.names.join(', ')} :feet_wave:`)
                     .then(() => core.showInfo('wowo sent'));
             },
             utcOffset: this.time_offset,
