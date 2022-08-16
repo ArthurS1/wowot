@@ -8,7 +8,7 @@ import { LocalTime } from '@js-joda/core';
 import { CronJob } from 'cron';
 import { Timezone, UserRecord } from './timezone';
 import * as Fs from 'fs';
-import * as Csv from 'csv';
+import { parse } from 'csv-parse/sync';
 import Conf from './conf';
 
 export enum ServerState {
@@ -33,15 +33,7 @@ export class Core {
         this.client.once('ready', () => {
             const timezones_data = this.parseCsv(file);
 
-            if (!timezones_data) {
-                this.showInfo('fatal cannot use csv, pulling out.');
-            }
-            // create timezones
-            this.cron = new CronJob(this.conf.cron, () => {
-                this.send('ωoωo les amis :wave:')
-                    .then(() => this.showInfo('wowo sent'));
-            });
-            this.cron.start();
+            timezones_data.forEach((user_record) => new Timezone(user_record, this));
         });
         this.setup();
     }
@@ -62,7 +54,10 @@ export class Core {
         return Promise.reject(new Error('not a text channel'));
     }
 
-    static accumulateRecords(acc: UserRecord[], current: {name: string, offset: string}) : UserRecord[]
+    static accumulateRecords(
+        acc: UserRecord[],
+        current: {name: string, offset: string}
+    ): UserRecord[]
     {
         const new_record: UserRecord = {
             names: [current.name],
@@ -82,17 +77,10 @@ export class Core {
     }
 
     parseCsv(file: string): UserRecord[] {
-        let result: UserRecord[] = [];
+        const data = Fs.readFileSync(file, 'utf8');
+        const records = parse(data, { columns: true });
 
-        Fs.readFile(file, 'utf8', (_, data) => {
-            Csv.parse(
-                data,
-                { columns: true },
-                (_, records: { name: string, offset: string }[]) => {
-                    result = records.reduce(Core.accumulateRecords, []);
-                });
-        });
-        return result;
+        return records.reduce(Core.accumulateRecords, []);
     }
 
     destroy() {
