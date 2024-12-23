@@ -1,5 +1,7 @@
 # Wowot
 
+**This project is no longer updated, do not hesitate to fork and update it if needed**
+
 A discord bot for the wowo.
 
 ## 🤖 Project goals
